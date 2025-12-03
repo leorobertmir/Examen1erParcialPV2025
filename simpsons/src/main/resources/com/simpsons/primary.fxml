@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.simpsons.PrimaryController">
+   <left>
+      <VBox spacing="15.0" styleClass="sidebar" prefWidth="280.0">
+         <children>
+            <VBox spacing="10.0" alignment="CENTER">
+               <children>
+                  <Label text="🍩" styleClass="main-icon" />
+                  <Label text="SPRINGFIELD" styleClass="app-title" />
+                  <Label text="Personajes" styleClass="app-subtitle" />
+               </children>
+               <padding>
+                  <Insets top="30.0" bottom="20.0" />
+               </padding>
+            </VBox>
+            
+            <Separator />
+            
+            <VBox spacing="10.0" styleClass="search-section">
+               <children>
+                  <Label text="Buscar Personaje" styleClass="section-title" />
+                  <TextField fx:id="searchField" promptText="Nombre del personaje..." styleClass="search-field" />
+                  <HBox spacing="10.0">
+                     <children>
+                        <Button fx:id="searchButton" text="🔍 Buscar" onAction="#searchCharacter" styleClass="action-button" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="randomButton" text="🎲 Aleatorio" onAction="#getRandomCharacter" styleClass="random-button-small" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets left="20.0" right="20.0" />
+               </padding>
+            </VBox>
+            
+            <Separator />
+            
+            <VBox spacing="10.0" styleClass="info-section">
+               <children>
+                  <Label text="ℹ️ Información" styleClass="section-title" />
+                  <Label text="Explora más de 1182 personajes de Los Simpsons" styleClass="info-text" wrapText="true" />
+               </children>
+               <padding>
+                  <Insets left="20.0" right="20.0" bottom="20.0" />
+               </padding>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="20.0" />
+         </padding>
+      </VBox>
+   </left>
+   
+   <center>
+      <VBox spacing="0.0">
+         <children>
+            <HBox alignment="CENTER" styleClass="top-bar">
+               <children>
+                  <Label text="Personajes de Los Simpsons" styleClass="main-title" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button fx:id="loadMoreButton" text="➕ Cargar Más" onAction="#loadMoreCharacters" styleClass="load-button" />
+               </children>
+               <padding>
+                  <Insets left="30.0" right="30.0" top="20.0" bottom="20.0" />
+               </padding>
+            </HBox>
+            
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" styleClass="main-scroll" VBox.vgrow="ALWAYS">
+               <content>
+                  <FlowPane fx:id="charactersContainer" hgap="20.0" vgap="20.0" styleClass="characters-grid">
+                     <padding>
+                        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                     </padding>
+                  </FlowPane>
+               </content>
+            </ScrollPane>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

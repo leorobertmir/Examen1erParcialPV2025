@@ -1,0 +1,303 @@
+/* Estilos modernos para Los Simpsons - Diseño Único */
+
+.root {
+    -fx-background-color: #f8f9fa;
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+/* Sidebar izquierdo */
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #2c3e50, #34495e);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 0, 0);
+}
+
+.main-icon {
+    -fx-font-size: 64px;
+    -fx-text-fill: #f39c12;
+    -fx-effect: dropshadow(gaussian, rgba(243, 156, 18, 0.5), 10, 0, 0, 0);
+}
+
+.app-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ecf0f1;
+    -fx-letter-spacing: 3px;
+}
+
+.app-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #bdc3c7;
+    -fx-text-transform: uppercase;
+    -fx-letter-spacing: 2px;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ecf0f1;
+    -fx-padding: 10 0 5 0;
+}
+
+.info-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: #95a5a6;
+    -fx-line-spacing: 3px;
+}
+
+/* Campos de búsqueda */
+.search-field {
+    -fx-background-color: #34495e;
+    -fx-background-radius: 8;
+    -fx-border-color: #f39c12;
+    -fx-border-radius: 8;
+    -fx-border-width: 2;
+    -fx-padding: 12 15;
+    -fx-font-size: 14px;
+    -fx-text-fill: #ecf0f1;
+    -fx-prompt-text-fill: #7f8c8d;
+}
+
+.search-field:focused {
+    -fx-border-color: #e67e22;
+    -fx-border-width: 3;
+    -fx-background-color: #3d566e;
+}
+
+/* Botones */
+.action-button {
+    -fx-background-color: #f39c12;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 12 20;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(243, 156, 18, 0.4), 8, 0, 0, 2);
+}
+
+.action-button:hover {
+    -fx-background-color: #e67e22;
+    -fx-effect: dropshadow(gaussian, rgba(230, 126, 34, 0.6), 12, 0, 0, 3);
+}
+
+.random-button-small {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 12 18;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.4), 8, 0, 0, 2);
+    -fx-min-width: 80;
+}
+
+.random-button-small:hover {
+    -fx-background-color: #2980b9;
+    -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.6), 12, 0, 0, 3);
+}
+
+.load-button {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-padding: 12 25;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(39, 174, 96, 0.4), 10, 0, 0, 2);
+}
+
+.load-button:hover {
+    -fx-background-color: #229954;
+    -fx-effect: dropshadow(gaussian, rgba(34, 153, 84, 0.6), 15, 0, 0, 3);
+}
+
+.load-button:disabled {
+    -fx-background-color: #95a5a6;
+    -fx-opacity: 0.6;
+}
+
+/* Top bar */
+.top-bar {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+.main-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* ScrollPane principal */
+.main-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.main-scroll .viewport {
+    -fx-background-color: #f8f9fa;
+}
+
+.main-scroll .scroll-bar:vertical {
+    -fx-background-color: #ecf0f1;
+    -fx-background-radius: 10;
+    -fx-pref-width: 12px;
+}
+
+.main-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #bdc3c7;
+    -fx-background-radius: 10;
+}
+
+.main-scroll .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #95a5a6;
+}
+
+/* Grid de personajes */
+.characters-grid {
+    -fx-background-color: transparent;
+    -fx-alignment: center;
+}
+
+/* Separadores */
+.separator {
+    -fx-background-color: #34495e;
+}
+
+.separator .line {
+    -fx-border-color: #34495e;
+    -fx-border-width: 1;
+}
+
+/* Tarjetas de personajes - Estilo moderno tipo card */
+.character-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);
+    -fx-padding: 0;
+    -fx-max-width: 280;
+    -fx-min-width: 280;
+    -fx-cursor: hand;
+}
+
+.character-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(243, 156, 18, 0.3), 20, 0, 0, 8);
+    -fx-translate-y: -5;
+}
+
+/* Imagen del personaje */
+.character-image-container {
+    -fx-background-color: linear-gradient(to bottom, #f39c12, #e67e22);
+    -fx-background-radius: 15 15 0 0;
+    -fx-padding: 20;
+    -fx-alignment: center;
+}
+
+/* Contenido de la tarjeta */
+.character-content {
+    -fx-padding: 20;
+    -fx-spacing: 12;
+}
+
+.character-name {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-wrap-text: true;
+}
+
+.character-occupation {
+    -fx-font-size: 13px;
+    -fx-text-fill: #7f8c8d;
+    -fx-wrap-text: true;
+}
+
+.character-info-row {
+    -fx-spacing: 15;
+    -fx-alignment: center-left;
+}
+
+.character-status-alive {
+    -fx-background-color: #d5f4e6;
+    -fx-text-fill: #27ae60;
+    -fx-padding: 6 12;
+    -fx-background-radius: 20;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.character-status-deceased {
+    -fx-background-color: #fadbd8;
+    -fx-text-fill: #e74c3c;
+    -fx-padding: 6 12;
+    -fx-background-radius: 20;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.character-age {
+    -fx-font-size: 12px;
+    -fx-text-fill: #95a5a6;
+}
+
+.character-phrase {
+    -fx-font-size: 12px;
+    -fx-text-fill: #34495e;
+    -fx-font-style: italic;
+    -fx-wrap-text: true;
+    -fx-padding: 10;
+    -fx-background-color: #ecf0f1;
+    -fx-background-radius: 8;
+}
+
+.character-details-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.character-details-button:hover {
+    -fx-background-color: #2980b9;
+    -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.4), 8, 0, 0, 2);
+}
+
+/* Indicador de carga */
+.loading-indicator {
+    -fx-font-size: 18px;
+    -fx-text-fill: #7f8c8d;
+    -fx-padding: 30;
+}
+
+/* Alertas personalizadas */
+.alert {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 20, 0, 0, 5);
+}
+
+.alert .header-panel {
+    -fx-background-color: linear-gradient(to right, #f39c12, #e67e22);
+    -fx-background-radius: 15 15 0 0;
+}
+
+.alert .header-panel .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+/* Animaciones suaves */
+@keyframes fadeIn {
+    from {
+        -fx-opacity: 0;
+    }
+    to {
+        -fx-opacity: 1;
+    }
+}
