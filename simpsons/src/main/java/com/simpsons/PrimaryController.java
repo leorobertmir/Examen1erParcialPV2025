@@ -43,11 +43,21 @@ public class PrimaryController {
     private boolean isLoading = false;
     private boolean hasMorePages = true;
 
+    // ============================================
+    // TAREA 1: INITIALIZE - COMPLETADO
+    // ============================================
     public void initialize() {
-        // TODO: Inicializar simpsonService con new SimpsonService()
-        // TODO: Inicializar currentCharactersList como new ArrayList<>()
-        // TODO: Llamar a setupFlowPaneLayout()
-        // TODO: Llamar a loadInitialCharacters()
+        // Inicializar servicio de Simpsons
+        simpsonService = new SimpsonService();
+        
+        // Inicializar lista de personajes
+        currentCharactersList = new ArrayList<>();
+        
+        // Configurar el layout del FlowPane
+        setupFlowPaneLayout();
+        
+        // Cargar personajes iniciales
+        loadInitialCharacters();
     }
     
     private void setupFlowPaneLayout() {
@@ -94,32 +104,167 @@ public class PrimaryController {
         }
     }
 
+    // ============================================
+    // TAREA 2: SEARCH CHARACTER - COMPLETADO
+    // ============================================
     @FXML
     private void searchCharacter() {
-        // TODO: Obtener texto del campo de búsqueda y validar que no esté vacío
-        // TODO: Limpiar contenedor y mostrar indicador de carga
-        // TODO: Buscar personaje en currentCharactersList usando stream
-        // TODO: Si se encuentra, ocultar indicador, limpiar y mostrar personaje
-        // TODO: Si no se encuentra, ocultar indicador y mostrar alerta informativa
+        // Obtener texto del campo de búsqueda
+        String searchText = searchField.getText().trim();
+        
+        // Validar que no esté vacío
+        if (searchText.isEmpty()) {
+            showAlert("Error", "Por favor ingresa el nombre de un personaje");
+            return;
+        }
+        
+        // Limpiar contenedor y mostrar indicador de carga
+        clearCharactersContainer();
+        showLoadingIndicator();
+        
+        // Buscar personaje en currentCharactersList usando stream
+        Personajes foundCharacter = currentCharactersList.stream()
+                .filter(character -> character.getName() != null && 
+                        character.getName().toLowerCase().contains(searchText.toLowerCase()))
+                .findFirst()
+                .orElse(null);
+        
+        // Procesar resultado de búsqueda
+        if (foundCharacter != null) {
+            // Si se encuentra
+            hideLoadingIndicator();
+            clearCharactersContainer();
+            displayCharacter(foundCharacter);
+        } else {
+            // Si no se encuentra
+            hideLoadingIndicator();
+            showAlert("Información", 
+                    "Personaje no encontrado en la lista actual. Intenta cargar más personajes o busca por ID.");
+        }
     }
 
+    // ============================================
+    // TAREA 3: RANDOM CHARACTER - COMPLETADO
+    // ============================================
     @FXML
     private void getRandomCharacter() {
-        // TODO: Limpiar contenedor y mostrar indicador de carga
-        // TODO: Crear Task<Personajes> que genere ID aleatorio y obtenga personaje
-        // TODO: Configurar setOnSucceeded para mostrar personaje
-        // TODO: Configurar setOnFailed para mostrar error
-        // TODO: Iniciar Task en nuevo hilo
+        // Limpiar contenedor y mostrar indicador de carga
+        clearCharactersContainer();
+        showLoadingIndicator();
+        
+        // Crear Task para obtener personaje aleatorio
+        Task<Personajes> randomTask = new Task<Personajes>() {
+            @Override
+            protected Personajes call() throws Exception {
+                // Generar ID aleatorio entre 1 y 1182
+                Random random = new Random();
+                int randomId = random.nextInt(1182) + 1;
+                
+                // Obtener personaje de la API
+                return simpsonService.getCharacterById(randomId).get();
+            }
+        };
+        
+        // Configurar acción al completar exitosamente
+        randomTask.setOnSucceeded(event -> {
+            hideLoadingIndicator();
+            
+            Personajes character = randomTask.getValue();
+            
+            if (character != null) {
+                // Limpiar lista actual y agregar personaje aleatorio
+                currentCharactersList.clear();
+                currentCharactersList.add(character);
+                
+                // Mostrar personaje
+                displayCharacter(character);
+            }
+        });
+        
+        // Configurar acción al fallar
+        randomTask.setOnFailed(event -> {
+            hideLoadingIndicator();
+            showAlert("Error", "No se pudo obtener un personaje aleatorio");
+        });
+        
+        // Iniciar Task en nuevo hilo
+        new Thread(randomTask).start();
     }
 
+    // ============================================
+    // TAREA 4: LOAD MORE CHARACTERS - COMPLETADO
+    // ============================================
     @FXML
     private void loadMoreCharacters() {
-        // TODO: Validar isLoading y hasMorePages
-        // TODO: Establecer isLoading = true y mostrar indicador
-        // TODO: Crear Task<SimpsonResponse> para obtener personajes
-        // TODO: Configurar setOnSucceeded para procesar respuesta y actualizar UI
-        // TODO: Configurar setOnFailed para manejar errores
-        // TODO: Iniciar Task en nuevo hilo
+        // Validar que no se esté cargando y que haya más páginas
+        if (isLoading || !hasMorePages) {
+            return;
+        }
+        
+        // Establecer bandera de carga
+        isLoading = true;
+        
+        // Mostrar indicador de carga
+        showLoadingIndicator();
+        
+        // Crear Task para obtener personajes de la API
+        Task<SimpsonResponse> loadTask = new Task<SimpsonResponse>() {
+            @Override
+            protected SimpsonResponse call() throws Exception {
+                // Obtener personajes de la página actual
+                return simpsonService.getCharacters(currentPage).get();
+            }
+        };
+        
+        // Configurar acción al completar exitosamente
+        loadTask.setOnSucceeded(event -> {
+            hideLoadingIndicator();
+            
+            SimpsonResponse response = loadTask.getValue();
+            
+            if (response != null && response.getResults() != null) {
+                // Obtener lista de nuevos personajes
+                List<Personajes> newCharacters = response.getResults();
+                
+                // Si es la primera página, limpiar lista actual
+                if (currentPage == 1) {
+                    currentCharactersList.clear();
+                }
+                
+                // Agregar nuevos personajes a la lista
+                currentCharactersList.addAll(newCharacters);
+                
+                // Mostrar cada personaje en la UI
+                for (Personajes character : newCharacters) {
+                    displayCharacter(character);
+                }
+                
+                // Verificar si hay más páginas
+                hasMorePages = response.getNext() != null && !response.getNext().isEmpty();
+                
+                // Incrementar página para próxima carga
+                currentPage++;
+                
+                // Si no hay más páginas, deshabilitar botón
+                if (!hasMorePages) {
+                    loadMoreButton.setDisable(true);
+                    loadMoreButton.setText("No hay más personajes");
+                }
+            }
+            
+            // Restablecer bandera de carga
+            isLoading = false;
+        });
+        
+        // Configurar acción al fallar
+        loadTask.setOnFailed(event -> {
+            hideLoadingIndicator();
+            showAlert("Error", "No se pudieron cargar más personajes");
+            isLoading = false;
+        });
+        
+        // Iniciar Task en nuevo hilo
+        new Thread(loadTask).start();
     }
 
     private void loadInitialCharacters() {
@@ -135,6 +280,9 @@ public class PrimaryController {
         });
     }
 
+    // ============================================
+    // TAREA 5: CREATE CHARACTER CARD - COMPLETADO
+    // ============================================
     private VBox createCharacterCard(Personajes character) {
         VBox card = new VBox();
         card.getStyleClass().add("character-card");
@@ -160,19 +308,83 @@ public class PrimaryController {
         ImageView imageView = createCharacterImage(character);
         imageContainer.getChildren().add(imageView);
         
-        // TODO: Crear contentContainer (VBox con espaciado 12 y clase "character-content")
-        // TODO: Crear label del nombre con clase "character-name"
-        // TODO: Crear label de ocupación con emoji 💼 y clase "character-occupation"
-        // TODO: Crear infoRow (HBox) con edad y estado
-        // TODO: Crear label de frase con clase "character-phrase"
-        // TODO: Crear botón de detalles con evento que llame a showCharacterDetails
-        // TODO: Agregar todos los componentes al contentContainer
-        // TODO: Agregar imageContainer y contentContainer a la tarjeta
+        // ===== COMPONENTES DE LA TARJETA =====
+        
+        // Crear contenedor de contenido
+        VBox contentContainer = new VBox(12);
+        contentContainer.getStyleClass().add("character-content");
+
+        // Label del nombre
+        Label nameLabel = new Label(character.getName());
+        nameLabel.getStyleClass().add("character-name");
+
+        // Label de ocupación
+        String occupation = (character.getOccupation() != null && !character.getOccupation().isEmpty()) 
+                ? character.getOccupation() 
+                : "Sin ocupación";
+        Label occupationLabel = new Label("💼 " + occupation);
+        occupationLabel.getStyleClass().add("character-occupation");
+
+        // Fila de información (edad y estado)
+        HBox infoRow = new HBox(10);
+        infoRow.getStyleClass().add("character-info-row");
+        infoRow.setAlignment(Pos.CENTER_LEFT);
+
+        // Edad (solo si existe y es mayor a 0)
+        if (character.getAge() != null && character.getAge() > 0) {
+            Label ageLabel = new Label("🎂 " + character.getAge() + " años");
+            ageLabel.getStyleClass().add("character-age");
+            infoRow.getChildren().add(ageLabel);
+        }
+
+        // Estado
+        String status = character.getStatus() != null ? character.getStatus() : "Desconocido";
+        Label statusLabel = new Label(status);
+
+        if (status.equalsIgnoreCase("Alive")) {
+            statusLabel.getStyleClass().add("character-status-alive");
+        } else if (status.equalsIgnoreCase("Deceased")) {
+            statusLabel.getStyleClass().add("character-status-deceased");
+        } else {
+            statusLabel.getStyleClass().add("character-age");
+        }
+
+        infoRow.getChildren().add(statusLabel);
+
+        // Label de frase famosa
+        Label phraseLabel = new Label();
+
+        if (character.getPhrases() != null && character.getPhrases().length > 0) {
+            phraseLabel.setText("\"" + character.getPhrases()[0] + "\"");
+        } else {
+            phraseLabel.setText("Sin frase famosa");
+        }
+
+        phraseLabel.getStyleClass().add("character-phrase");
+
+        // Botón de detalles
+        Button detailsButton = new Button("Ver Detalles");
+        detailsButton.getStyleClass().add("character-details-button");
+        detailsButton.setOnAction(e -> showCharacterDetails(character));
+
+        // Agregar todos los componentes al contenedor de contenido
+        contentContainer.getChildren().addAll(
+                nameLabel,
+                occupationLabel,
+                infoRow,
+                phraseLabel,
+                detailsButton
+        );
+
+        // Agregar imageContainer y contentContainer a la tarjeta
+        card.getChildren().addAll(imageContainer, contentContainer);
         
         return card;
     }
 
-    // MÉTODO COMPLETO - NO MODIFICAR
+    // ========================================
+    // MÉTODOS DE CARGA DE IMAGEN (NO MODIFICAR)
+    // ========================================
     private ImageView createCharacterImage(Personajes character) {
         ImageView imageView = new ImageView();
         imageView.setFitHeight(180);
@@ -227,7 +439,6 @@ public class PrimaryController {
         return imageView;
     }
     
-    // MÉTODO COMPLETO - NO MODIFICAR
     private void downloadAndLoadImage(ImageView imageView, String primaryUrl, String portraitPath, String characterName) {
         HttpClient client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(15))
@@ -243,7 +454,6 @@ public class PrimaryController {
         downloadImageBytes(client, imageView, urls, 0, characterName);
     }
     
-    // MÉTODO COMPLETO - NO MODIFICAR
     private void downloadImageBytes(HttpClient client, ImageView imageView, String[] urls, int index, String characterName) {
         if (index >= urls.length) {
             System.err.println("❌ No se pudo cargar imagen para: " + characterName + " después de " + urls.length + " intentos");
@@ -343,15 +553,75 @@ public class PrimaryController {
         return sb.toString().trim();
     }
 
-
+    // ============================================
+    // TAREA 6: SHOW CHARACTER DETAILS - COMPLETADO
+    // ============================================
     private void showCharacterDetails(Personajes character) {
-        // TODO: Crear Alert de tipo INFORMATION
-        // TODO: Establecer título y header
-        // TODO: Crear StringBuilder y agregar todos los detalles
-        // TODO: Agregar frases famosas si existen
-        // TODO: Configurar Alert y mostrarlo
+        // Crear Alert de tipo INFORMATION
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        
+        // Establecer título
+        alert.setTitle("Detalles de " + character.getName());
+        
+        // Establecer header como null (sin header)
+        alert.setHeaderText(null);
+        
+        // Crear StringBuilder para construir detalles
+        StringBuilder details = new StringBuilder();
+        
+        // Agregar información básica
+        details.append("ID: ").append(character.getId()).append("\n");
+        details.append("Nombre: ").append(character.getName()).append("\n");
+        
+        // Agregar edad si existe
+        if (character.getAge() != null) {
+            details.append("Edad: ").append(character.getAge()).append(" años\n");
+        }
+        
+        // Agregar fecha de nacimiento si existe
+        if (character.getBirthdate() != null && !character.getBirthdate().isEmpty()) {
+            details.append("Fecha de Nacimiento: ").append(character.getBirthdate()).append("\n");
+        }
+        
+        // Agregar género si existe
+        if (character.getGender() != null && !character.getGender().isEmpty()) {
+            details.append("Género: ").append(character.getGender()).append("\n");
+        }
+        
+        // Agregar ocupación si existe
+        if (character.getOccupation() != null && !character.getOccupation().isEmpty()) {
+            details.append("Ocupación: ").append(character.getOccupation()).append("\n");
+        }
+        
+        // Agregar estado
+        String status = character.getStatus() != null ? character.getStatus() : "Desconocido";
+        details.append("Estado: ").append(status).append("\n");
+        
+        // Agregar frases famosas si existen
+        if (character.getPhrases() != null && character.getPhrases().length > 0) {
+            details.append("\nFrases Famosas:\n");
+            
+            for (String phrase : character.getPhrases()) {
+                details.append("• \"").append(phrase).append("\"\n");
+            }
+        }
+        
+        // Establecer contenido del Alert
+        alert.setContentText(details.toString());
+        
+        // Hacer el Alert redimensionable
+        alert.setResizable(true);
+        
+        // Establecer ancho preferido
+        alert.getDialogPane().setPrefWidth(500);
+        
+        // Mostrar Alert y esperar
+        alert.showAndWait();
     }
 
+    // ========================================
+    // MÉTODOS AUXILIARES
+    // ========================================
     private void clearCharactersContainer() {
         charactersContainer.getChildren().clear();
     }
@@ -376,4 +646,3 @@ public class PrimaryController {
         alert.showAndWait();
     }
 }
-
