@@ -43,9 +43,9 @@ public class PrimaryController {
     private boolean isLoading = false;
     private boolean hasMorePages = true;
 
-    // ============================================
-    // TAREA 1: INITIALIZE - COMPLETADO
-    // ============================================
+    
+    // TAREA 1: INITIALIZE 
+    
     public void initialize() {
         // Inicializar servicio de Simpsons
         simpsonService = new SimpsonService();
@@ -104,9 +104,10 @@ public class PrimaryController {
         }
     }
 
-    // ============================================
-    // TAREA 2: SEARCH CHARACTER - COMPLETADO
-    // ============================================
+    
+    // TAREA 2: SEARCH CHARACTER 
+    
+
     @FXML
     private void searchCharacter() {
         // Obtener texto del campo de búsqueda
@@ -143,9 +144,10 @@ public class PrimaryController {
         }
     }
 
-    // ============================================
-    // TAREA 3: RANDOM CHARACTER - COMPLETADO
-    // ============================================
+    
+    // TAREA 3: RANDOM CHARACTER 
+    
+
     @FXML
     private void getRandomCharacter() {
         // Limpiar contenedor y mostrar indicador de carga
@@ -191,9 +193,10 @@ public class PrimaryController {
         new Thread(randomTask).start();
     }
 
-    // ============================================
-    // TAREA 4: LOAD MORE CHARACTERS - COMPLETADO
-    // ============================================
+    
+    // TAREA 4: LOAD MORE CHARACTERS 
+    
+
     @FXML
     private void loadMoreCharacters() {
         // Validar que no se esté cargando y que haya más páginas
@@ -280,9 +283,10 @@ public class PrimaryController {
         });
     }
 
-    // ============================================
-    // TAREA 5: CREATE CHARACTER CARD - COMPLETADO
-    // ============================================
+    
+    // TAREA 5: CREATE CHARACTER CARD 
+    
+
     private VBox createCharacterCard(Personajes character) {
         VBox card = new VBox();
         card.getStyleClass().add("character-card");
@@ -382,9 +386,10 @@ public class PrimaryController {
         return card;
     }
 
-    // ========================================
+    
     // MÉTODOS DE CARGA DE IMAGEN (NO MODIFICAR)
-    // ========================================
+    
+
     private ImageView createCharacterImage(Personajes character) {
         ImageView imageView = new ImageView();
         imageView.setFitHeight(180);
@@ -553,9 +558,10 @@ public class PrimaryController {
         return sb.toString().trim();
     }
 
-    // ============================================
-    // TAREA 6: SHOW CHARACTER DETAILS - COMPLETADO
-    // ============================================
+    
+    // TAREA 6: SHOW CHARACTER DETAILS 
+    
+
     private void showCharacterDetails(Personajes character) {
         // Crear Alert de tipo INFORMATION
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -619,9 +625,9 @@ public class PrimaryController {
         alert.showAndWait();
     }
 
-    // ========================================
+    
     // MÉTODOS AUXILIARES
-    // ========================================
+    
     private void clearCharactersContainer() {
         charactersContainer.getChildren().clear();
     }
